@@ -1,0 +1,296 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+@import 'tailwindcss';
+
+/* ── Shell UI ─────────────────────────────────────────────────────────────
+   从 svaf-next 的 globals.css 裁出工具页真正用到的部分（去掉了 prose / 代码块 /
+   抽屉 / 骨架屏那几段——这里没有博客和论坛）。
+   终端 shell 设计系统：近黑灰阶背景、柔和高对比、实色 1px 边框、零圆角、反色选择。
+   背景 oklch(0.205)≈#171717，正文 oklch(0.92)≈#e5e5e5，对比约 14:1。
+   **不要改回纯黑/纯白**。 */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  /* 零圆角：所有 radius token 归零 */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+}
+
+:root {
+  --font-geist-sans: 'Geist Variable', sans-serif;
+  --font-geist-mono: 'Geist Mono Variable', monospace;
+  --background: oklch(0.205 0 0);
+  --foreground: oklch(0.92 0 0);
+  --card: oklch(0.24 0 0);
+  --card-foreground: oklch(0.92 0 0);
+  --popover: oklch(0.26 0 0);
+  --popover-foreground: oklch(0.92 0 0);
+  --primary: oklch(0.92 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.72 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.3 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.34 0 0);
+  --accent-foreground: oklch(0.92 0 0);
+  --destructive: oklch(0.68 0.21 27);
+  --border: oklch(0.37 0 0);
+  --input: oklch(0.42 0 0);
+  --ring: oklch(0.92 0 0);
+  --radius: 0px;
+}
+
+/* 全局零圆角：未分层规则在级联中优先于所有 @layer（含 Tailwind utilities），
+   一举压平 rounded-full / rounded-[...] 等任何工具类；
+   内联 style 的圆角（封面制作里用户可调的图标圆角）不受影响。 */
+*,
+::before,
+::after {
+  border-radius: 0;
+}
+
+/* 原生 range 滑杆：灰色轨道 + 白色方块推子（终端 fader 风格）。
+   未分层规则压过页面里遗留的 bg-muted / rounded-full / thumb 工具类，全站统一。 */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  background: oklch(0.42 0 0);
+  border-radius: 0;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 8px;
+  height: 16px;
+  margin-top: -6px;
+  background: var(--foreground);
+  border: none;
+  border-radius: 0;
+}
+input[type='range']::-moz-range-track {
+  height: 4px;
+  background: oklch(0.42 0 0);
+  border-radius: 0;
+}
+input[type='range']::-moz-range-thumb {
+  width: 8px;
+  height: 16px;
+  background: var(--foreground);
+  border: none;
+  border-radius: 0;
+}
+input[type='range']:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    /* html 是 document.scrollingElement（视口滚动容器），这里的 overflow-x
+       不会破坏 position: sticky。但 body 和中间 wrapper 绝不能有 overflow-x
+       ——否则会创建新的 scroll container，成为 sticky 边界。 */
+  }
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  #root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* 终端选区：反色 */
+  ::selection {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* 焦点：2px 实线白框，无圆角 */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 0;
+  }
+
+  /* 方形滚动条：中灰滑块保证在黑底上可读 */
+  * {
+    scrollbar-color: oklch(0.5 0 0) var(--background);
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.5 0 0);
+    border: 2px solid var(--background);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.72 0 0);
+  }
+
+  /* 网格子项默认允许收缩到 0（对抗 CSS Grid 的隐式最小宽度）：
+     display:grid 若没有显式 grid-template-columns，auto 轨道会用内容的
+     min-content 撑住最小宽度且不随视口收缩，导致窄屏溢出。 */
+  .grid > * {
+    min-width: 0;
+  }
+
+  /* 长文本（文件名/URL 等无空格可断词的字符串）默认允许任意位置断行 */
+  body {
+    overflow-wrap: break-word;
+  }
+
+  /* 原生 checkbox/radio：白色高亮 */
+  input[type='checkbox'],
+  input[type='radio'],
+  progress {
+    accent-color: var(--foreground);
+  }
+}
+
+/* ── Shell 动效（极简、快速）──────────────────────────────────────────── */
+
+/* 骨架屏：45° 斜纹缓慢滚动的扫描块。
+   实现：容器做遮罩（overflow hidden），伪元素铺一层斜纹并向左多画一个周期，
+   用 transform 整体平移。斜纹用 14×14 整数瓦片平铺（色标为瓦片百分比），
+   平移一格瓦片（14px）即回到起点——循环逐像素精确，无累积偏移；
+   transform 由合成器驱动，图案不随动画重新光栅化。 */
+.shell-skeleton {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: oklch(0.24 0 0);
+}
+
+.shell-skeleton::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 -14px;
+  background-image: linear-gradient(
+    135deg,
+    oklch(0.36 0 0) 25%,
+    oklch(0.24 0 0) 25%,
+    oklch(0.24 0 0) 50%,
+    oklch(0.36 0 0) 50%,
+    oklch(0.36 0 0) 75%,
+    oklch(0.24 0 0) 75%
+  );
+  background-size: 14px 14px;
+  animation: shell-scan 1.2s linear infinite;
+  will-change: transform;
+}
+
+@keyframes shell-scan {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell-skeleton::before {
+    animation: none;
+  }
+}
+
+/* 加载指示器：三个方形点依次点亮（■ □ □ → □ ■ □ → □ □ ■）。
+   占位盒尺寸由外部 size-* 类给定，点宽取盒宽百分比随尺寸缩放；
+   opacity 用跳变色标（无过渡帧），配合三点各错开 1/3 周期。 */
+.shell-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.shell-spinner > span {
+  width: 26%;
+  aspect-ratio: 1;
+  background: currentColor;
+  animation: shell-spinner-dot 0.9s infinite;
+}
+
+.shell-spinner > span:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.shell-spinner > span:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes shell-spinner-dot {
+  0%,
+  32% {
+    opacity: 1;
+  }
+  33%,
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes shell-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell-spinner > span {
+    animation: none;
+    opacity: 1;
+  }
+  [data-slot='dropdown-menu-content'] {
+    animation: none !important;
+  }
+}

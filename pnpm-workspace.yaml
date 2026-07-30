@@ -1,0 +1,14 @@
+# 这个文件的存在本身就是重点：它把 tools-csr 声明成**自己的 pnpm 根**。
+#
+# 本目录在 svaf-next 仓库树里，而上一级也有一份 pnpm-workspace.yaml —— 没有这个
+# 文件时 pnpm 会一路往上找到那个根，把这里的依赖当成外部包忽略掉
+# （症状很迷惑：`pnpm install` 秒完、报 "resolved 3"、连 node_modules 都不建）。
+#
+# 把这个目录整个拷到别处也照样能装，不依赖上级。
+#
+# allowBuilds：pnpm 10+ 默认拦截依赖的构建脚本，esbuild 需要放行才能装好
+# 原生二进制（vite 构建依赖它）。
+allowBuilds:
+  esbuild: true
+onlyBuiltDependencies:
+  - esbuild

@@ -1,0 +1,32 @@
+{
+  // ⚠ Worker 脚本名不允许下划线，只能小写字母、数字、连字符。
+  // 仓库叫 2xss_box，Worker 只能叫 2xss-box —— 名字对不上是正常的，别去"修"。
+  // 改了 name 就是发布到**另一个 Worker**；没有 routes 时 wrangler 不接管路由，
+  // 结果是部署成功但域名仍指向旧 Worker，且不报错。
+  "name": "2xss-box",
+  "compatibility_date": "2026-07-31",
+
+  // account_id 刻意不写死在这里：本仓库是公开的，而它是整个 Cloudflare 账号的
+  // 稳定标识符（虽然不是凭据，单独拿到它做不了任何事）。
+  // 本地 `wrangler deploy` 时用环境变量给：
+  //   CLOUDFLARE_ACCOUNT_ID=xxx pnpm dlx wrangler deploy
+  // 走 CF 侧 git 集成从 main 部署时账号上下文是隐含的，根本不读这个字段。
+
+  "assets": {
+    "directory": "./dist",
+
+    // 与主站的 URL 规范形态一致：无尾斜杠（/cover 而不是 /cover/）
+    "html_handling": "drop-trailing-slash",
+
+    // **必须是 single-page-application，不能照抄 2xss_hub 的 404-page**：
+    // 这是个客户端路由的 SPA，/cover、/bili-cover?url=… 在磁盘上根本不存在
+    // 对应文件。404-page 会让直接刷新深链接变成真 404，只有从首页点进去才行
+    // —— 而那正是「硬刷新能跳转、点站内链接却 404」的镜像症状，很难查。
+    // single-page-application 对未命中的路径回 index.html + 200，交给
+    // createBrowserRouter 接管。
+    "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

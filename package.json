@@ -1,0 +1,36 @@
+{
+  "name": "svaf-tools-csr",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "从 svaf-next（RR7 全站 SSR）迁出的六个工具页，重写为纯客户端渲染的独立 SPA",
+  "scripts": {
+    "dev": "node scripts/build-icon-subset.mjs && vite",
+    "build": "node scripts/build-icon-subset.mjs && tsc -b --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "icons": "node scripts/build-icon-subset.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.1.1",
+    "@fontsource-variable/geist-mono": "^5.1.1",
+    "@iconify/react": "^6.0.2",
+    "clsx": "^2.1.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router": "^8.3.0",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/simple-icons": "^1.2.91",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^22.20.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.5"
+  }
+}
