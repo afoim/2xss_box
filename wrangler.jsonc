@@ -18,6 +18,14 @@
     // 与主站的 URL 规范形态一致：无尾斜杠（/cover 而不是 /cover/）
     "html_handling": "drop-trailing-slash",
 
+    // SPA 回退**只由这一行负责，不要再放 `public/_redirects`**。
+    // `_redirects` 是 Cloudflare Pages 的东西，但 Workers 静态资源也会读并校验它，
+    // 而 `/*  /index.html  200` 配上上面的 drop-trailing-slash 会被判成死循环，
+    // 整个 deploy 直接失败：
+    //   Invalid _redirects configuration: Line 4: Infinite loop detected in this
+    //   rule. This would cause a redirect to strip `.html` or `/index` and end up
+    //   triggering this rule again. [code: 100324]
+    //
     // **必须是 single-page-application，不能照抄 2xss_hub 的 404-page**：
     // 这是个客户端路由的 SPA，/cover、/bili-cover?url=… 在磁盘上根本不存在
     // 对应文件。404-page 会让直接刷新深链接变成真 404，只有从首页点进去才行

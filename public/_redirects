@@ -1,4 +1,0 @@
-# SPA 回退：CSR 下只有一个 index.html，深链接（/cover、/bili-cover?url=…）
-# 直接刷新会打到不存在的路径上。Cloudflare Pages / Netlify 认这个文件。
-# nginx 对应写法：try_files $uri $uri/ /index.html;
-/*    /index.html   200

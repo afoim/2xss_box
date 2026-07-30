@@ -79,8 +79,18 @@ hub 那边写的是 `404-page`。这里是客户端路由的 SPA，`/cover`、`/
 进去才行。`single-page-application` 对未命中的路径回 `index.html` + 200，交给
 `createBrowserRouter` 接管。
 
-`public/_redirects` 是给 Cloudflare Pages / Netlify 的等价物；nginx 写
-`try_files $uri $uri/ /index.html;`。
+**别再加 `public/_redirects`。** 那是 Cloudflare Pages 的写法，但 Workers 静态资源
+也会读并校验它 —— `/*  /index.html  200` 配上 `drop-trailing-slash` 会被判成死循环，
+整个 deploy 直接失败：
+
+```
+Invalid _redirects configuration:
+Line 4: Infinite loop detected in this rule. This would cause a redirect to
+strip `.html` or `/index` and end up triggering this rule again. [code: 100324]
+```
+
+换到别的托管上时，SPA 回退各写各的：nginx 是 `try_files $uri $uri/ /index.html;`，
+Netlify 才用 `_redirects`。
 
 ---
 
