@@ -1,6 +1,6 @@
 # 二叉树树工具箱（2xss_box）
 
-从 [2x.nz](https://2x.nz)（React Router 7 框架模式 / 全站 SSR）整块搬出来的工具页，
+从 [2x.nz](https://2x.nz)（React Router 7 服务端框架模式 / 全站 SSR）整块搬出来的工具页，
 重写成**纯客户端渲染**的独立单页应用。产物就是一个 `index.html` + 一堆哈希资源，
 没有任何服务端。
 
