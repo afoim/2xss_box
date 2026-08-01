@@ -76,14 +76,13 @@ export function AppShell() {
             <strong className="text-foreground">不会上传</strong>
             到任何服务器 —— 「B站封面」「文件」「追番」三项只请求各自的公开只读接口。
           </p>
+          {/* 直接指门户：2x.nz 现在只是重定向壳，/ 会 302 到这里，多一跳还多一个错名 */}
           <a
-            href="https://2x.nz"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="https://hub.acofork.com"
             className="inline-flex shrink-0 items-center gap-1.5 transition-colors hover:text-foreground"
           >
-            <Icon icon="mdi:open-in-new" className="size-3.5" />
-            {SITE_NAME.replace('工具箱', '')} · 2x.nz
+            <Icon icon="mdi:apps" className="size-3.5" />
+            回到门户
           </a>
         </div>
       </footer>
